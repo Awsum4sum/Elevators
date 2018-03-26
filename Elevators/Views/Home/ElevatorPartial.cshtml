@@ -1,0 +1,10 @@
+﻿@model ElevatorModel
+
+
+@foreach (var elev in Model.ElevatorList)
+{
+    <label>@elev.ElevatorCurrentFloor</label>
+    <label>@elev.ElevatorGoingUp</label>
+    <label>@elev.ElevatorID</label>
+    <br/>
+}

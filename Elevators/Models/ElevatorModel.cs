@@ -10,7 +10,7 @@ namespace Elevators.Models
         public int ElevatorCount { get; set; }
         public int FloorCount { get; set; }
         public int CurrentFloor { get; set; }
-        public int MaxFloors { get; set; }
+        public bool CallUp { get; set; }
         public List<Elevator> ElevatorList { get; set; }
     }
 
@@ -19,5 +19,7 @@ namespace Elevators.Models
         public int ElevatorID { get; set; }
         public int ElevatorCurrentFloor { get; set; }
         public bool ElevatorGoingUp { get; set; }
+        public bool ElevatorOpen { get; set; }
+        public uint ElevatorDistance { get; set; }
     }
 }

@@ -33,3 +33,26 @@
         display: none;
     }
 }
+
+.CurrentFloor {
+    background-color: black;
+    color: red;
+    margin: 20px;
+    padding: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.ElevatorMain {
+    margin: 20px;
+}
+
+.elevDirectionIndicator {
+    height: 25px;
+}
+
+.callButtonGroup {
+    margin-top:20px;
+}

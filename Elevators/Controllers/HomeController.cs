@@ -20,11 +20,11 @@ namespace Elevators.Controllers
         public IActionResult Elevator(ElevatorModel model)
         {
             model.ElevatorCount = 1;
-            model.FloorCount = random.Next(1, 100);
+            model.FloorCount = random.Next(5, 100);
             model.CurrentFloor = random.Next(model.FloorCount);
             model.ElevatorList = new List<Elevator>();
 
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Elevator elevator = new Elevator();
                 int elevatorDirection = random.Next(2);
@@ -32,6 +32,10 @@ namespace Elevators.Controllers
                 elevator.ElevatorCurrentFloor = random.Next(0, model.FloorCount);
                 elevator.ElevatorGoingUp = Convert.ToBoolean(elevatorDirection);
                 elevator.ElevatorID = i;
+                elevator.ElevatorDistance = Convert.ToUInt32(Math.Abs(model.CurrentFloor - elevator.ElevatorCurrentFloor));
+                elevator.ElevatorOpen = false;
+                if (elevator.ElevatorDistance == 0)
+                    elevator.ElevatorOpen = true;
 
                 model.ElevatorList.Add(elevator);
             }
@@ -39,8 +43,10 @@ namespace Elevators.Controllers
             return View(model);
         }
 
-        public IActionResult ElevatorPartial(ElevatorModel model)
+        public IActionResult CallElevator(ElevatorModel model)
         {
+
+
             return PartialView("ElevatorPartial.cshtml", model);
         }
 

@@ -1,10 +1,47 @@
 ﻿@model ElevatorModel
 
+<div class="row callButtonGroup">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
+        Call elevator:
+        <img src="~/images/CallAsc.png" id="callAsc" />
+        <label class="CurrentFloor">@Model.CurrentFloor</label>
+        <img src="~/images/CallDesc.png" id="callDesc" />
+    </div>
+</div>
 
-@foreach (var elev in Model.ElevatorList)
-{
-    <label>@elev.ElevatorCurrentFloor</label>
-    <label>@elev.ElevatorGoingUp</label>
-    <label>@elev.ElevatorID</label>
-    <br/>
-}
+<div class="row">
+    @foreach (var elev in Model.ElevatorList)
+    {
+        <div class="col-md-3 ElevatorMain">
+
+            @if (elev.ElevatorGoingUp)
+            {
+                <img src="~/images/Asc.png" class="elevDirectionIndicator" />
+                <label class="CurrentFloor">@elev.ElevatorCurrentFloor</label>
+                <img src="~/images/notDesc.png" class="elevDirectionIndicator" />
+            }
+            else
+            {
+                <img src="~/images/notAsc.png" class="elevDirectionIndicator" />
+                <label class="CurrentFloor">@elev.ElevatorCurrentFloor</label>
+                <img src="~/images/Desc.png" class="elevDirectionIndicator" />
+
+            }
+            @*<label>@elev.ElevatorID</label>
+                <label>@elev.ElevatorDistance</label>*@
+            <br />
+            <div style="width: 50px;">
+                @if (elev.ElevatorOpen == true)
+                {
+                    <img src="~/images/ElevOpen.png" />
+                }
+                else
+                {
+                    <img src="~/images/ElevClosed.png" />
+                }
+            </div>
+        </div>
+    }
+</div>

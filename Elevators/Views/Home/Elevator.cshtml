@@ -3,6 +3,38 @@
     ViewData["Title"] = "Elevator";
 }
 
-@{
-    await Html.RenderPartialAsync("ElevatorPartial.cshtml", Model);
-}
+<script>
+    function CallElevator(direction) {
+        console.log(direction)
+        var model = @Html.Raw(Json.Serialize(Model));
+        console.log(model)
+        console.log(direction == "asc")
+        if (direction == "asc")
+            model.CallUp = true;
+        else
+            model.CallUp = false;
+
+        model.CurrentFloor = 15
+
+        console.log(model)
+        $.ajax({
+            url: "Home/CallElevator",
+            data: model,
+            type: "POST",
+            success: function (html) {
+                $("#partialDiv").innerHtml(html);
+
+            }
+        })
+    }
+
+
+</script>
+
+<body>
+    <div id="partialDiv">
+        @{
+            await Html.RenderPartialAsync("ElevatorPartial.cshtml", Model);
+        }
+    </div>
+</body>

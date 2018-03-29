@@ -1,4 +1,4 @@
-﻿@model ElevatorModel
+@model ElevatorModel
 
 <div class="row callButtonGroup">
     <div class="col-md-4">
@@ -8,6 +8,10 @@
         <img src="~/images/CallAsc.png" id="callAsc" />
         <label class="CurrentFloor">@Model.CurrentFloor</label>
         <img src="~/images/CallDesc.png" id="callDesc" />
+    </div>
+
+    <div class="col-md-4">
+        <button id="newSim" onclick="@Url.Action("Elevator")">Reset</button>
     </div>
 </div>
 

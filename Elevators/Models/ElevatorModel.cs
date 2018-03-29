@@ -25,5 +25,6 @@ namespace Elevators.Models
         public int ElevatorBottomFloor { get; set; }
         public bool ElevatorBorked { get; set; }
         public bool ElevatorFull { get; set; }
+        public bool ElevatorInRange { get; set; }
     }
 }

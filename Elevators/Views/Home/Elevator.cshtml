@@ -10,17 +10,18 @@
         console.log(model)
         console.log(direction == "asc")
         if (direction == "asc")
-            model.CallUp = true;
+            model.callUp = true;
         else
-            model.CallUp = false;
-
-        model.CurrentFloor = 15
-
+            model.callUp = false;
+        
         console.log(model)
         $.ajax({
             url: "Home/CallElevator",
             data: model,
-            type: "POST"
+            type: "POST",
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.responseText);
+            }
         }).done(function (result) {
             console.log(result)
             $("#partialDiv").html(result)

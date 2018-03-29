@@ -32,10 +32,8 @@ namespace Elevators.Controllers
                 elevator.ElevatorCurrentFloor = random.Next(0, model.FloorCount);
                 elevator.ElevatorGoingUp = Convert.ToBoolean(elevatorDirection);
                 elevator.ElevatorID = i;
-                elevator.ElevatorDistance = Convert.ToUInt32(Math.Abs(model.CurrentFloor - elevator.ElevatorCurrentFloor));
+                elevator.ElevatorDistance = Convert.ToUInt32(Math.Abs(model.CurrentFloor - elevator.ElevatorCurrentFloor)); //getting absolute value of distance between floor and elevator
                 elevator.ElevatorOpen = false;
-                elevator.ElevatorBottomFloor = random.Next(0, model.FloorCount - 10);
-                elevator.ElevatorTopFloor = random.Next(elevator.ElevatorBottomFloor + 10,model.FloorCount);
                 if (elevator.ElevatorDistance == 0)
                     elevator.ElevatorOpen = true;
 
@@ -89,9 +87,19 @@ namespace Elevators.Controllers
 
             for (int j = 0; j < closestElevatorList.Count; j++) //Adding distance if elevator is not going in the correct direction
             {
-                if (model.CallUp != closestElevatorList[j].ElevatorGoingUp)
+                if(model.CurrentFloor > closestElevatorList[j].ElevatorCurrentFloor)
                 {
-                    closestElevatorList[j].ElevatorDistance = closestElevatorList[j].ElevatorDistance + 3;
+                    if (!closestElevatorList[j].ElevatorGoingUp)
+                    {
+                        closestElevatorList[j].ElevatorDistance = closestElevatorList[j].ElevatorDistance + 3;
+                    }
+                }
+                else if (model.CurrentFloor < closestElevatorList[j].ElevatorCurrentFloor)
+                {
+                    if (closestElevatorList[j].ElevatorGoingUp)
+                    {
+                        closestElevatorList[j].ElevatorDistance = closestElevatorList[j].ElevatorDistance + 3;
+                    }
                 }
             }
 
@@ -99,7 +107,7 @@ namespace Elevators.Controllers
                 .Where(x => x.ElevatorFull.Equals(false))
                 .Where(x => x.ElevatorBorked.Equals(false))
                 .Where(x => x.ElevatorInRange.Equals(true))
-                .FirstOrDefault(); //Getting closest elevator, also making sure elevator is not broken
+                .FirstOrDefault(); //Getting closest elevator, also making sure elevator is not broken and is in range
             
 
             for (int i = 0; i < model.ElevatorList.Count; i++)
@@ -115,7 +123,7 @@ namespace Elevators.Controllers
 
                     model.ElevatorList[i].ElevatorCurrentFloor = model.CurrentFloor;
                     model.ElevatorList[i].ElevatorOpen = true;
-                    //model.ElevatorList[i].ElevatorDistance = 0;
+                    model.ElevatorList[i].ElevatorGoingUp = model.CallUp;
                 }
                 else
                 {
@@ -160,4 +168,3 @@ namespace Elevators.Controllers
         }
     }
 }
-

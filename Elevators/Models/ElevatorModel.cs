@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,5 +21,9 @@ namespace Elevators.Models
         public bool ElevatorGoingUp { get; set; }
         public bool ElevatorOpen { get; set; }
         public uint ElevatorDistance { get; set; }
+        public int ElevatorTopFloor { get; set; }
+        public int ElevatorBottomFloor { get; set; }
+        public bool ElevatorBorked { get; set; }
+        public bool ElevatorFull { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model ElevatorModel
+@model ElevatorModel
 @{
     ViewData["Title"] = "Elevator";
 }
@@ -20,12 +20,12 @@
         $.ajax({
             url: "Home/CallElevator",
             data: model,
-            type: "POST",
-            success: function (html) {
-                $("#partialDiv").innerHtml(html);
-
-            }
-        })
+            type: "POST"
+        }).done(function (result) {
+            console.log(result)
+            $("#partialDiv").html(result)
+        });
+        
     }
 
 

@@ -1,27 +1,40 @@
 @model ElevatorModel
-
 <div class="row callButtonGroup">
     <div class="col-md-4">
     </div>
     <div class="col-md-4">
-        Call elevator:
-        <img src="~/images/CallAsc.png" id="callAsc" />
-        <label class="CurrentFloor">@Model.CurrentFloor</label>
-        <img src="~/images/CallDesc.png" id="callDesc" />
+        Call elevator(Click Arrow):
+        @if (Model.CurrentFloor == Model.FloorCount)
+        {
+            <label class="CurrentFloor">@Model.CurrentFloor</label>
+            <img src="~/images/CallDesc.png" id="callDesc" />
+        }
+        else if (Model.CurrentFloor == 0)
+        {
+            <img src="~/images/CallAsc.png" id="callAsc" />
+            <label class="CurrentFloor">@Model.CurrentFloor</label>
+        }
+        else
+        {
+            <img src="~/images/CallAsc.png" id="callAsc" />
+            <label class="CurrentFloor">@Model.CurrentFloor</label>
+            <img src="~/images/CallDesc.png" id="callDesc" />
+
+        }
+
     </div>
 
     <div class="col-md-4">
-        <button id="newSim" onclick="@Url.Action("Elevator")">Reset</button>
+        <button id="newSim" onclick="location.href='@Url.Action("Elevator", "Home")'">Reset</button>
     </div>
 </div>
-
 <div class="row">
     @foreach (var elev in Model.ElevatorList)
     {
         <div class="col-md-3 ElevatorMain">
-
             @if (elev.ElevatorGoingUp)
             {
+
                 <img src="~/images/Asc.png" class="elevDirectionIndicator" />
                 <label class="CurrentFloor">@elev.ElevatorCurrentFloor</label>
                 <img src="~/images/notDesc.png" class="elevDirectionIndicator" />
@@ -40,6 +53,17 @@
                 @if (elev.ElevatorOpen == true)
                 {
                     <img src="~/images/ElevOpen.png" />
+                }
+                else if (elev.ElevatorBorked)
+                {
+                    <label>broken</label>
+
+                }
+                else if (elev.ElevatorFull)
+                {
+
+                    <label>full</label>
+
                 }
                 else
                 {

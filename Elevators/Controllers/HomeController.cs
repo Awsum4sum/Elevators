@@ -128,8 +128,12 @@ namespace Elevators.Controllers
                 else
                 {
                     //Getting total distance all elevators travel, assuming they all travel at the same speed and continue in the direction they were going
-                    if (!model.ElevatorList[i].ElevatorBorked) //broken elevators don't move
+                    if (!model.ElevatorList[i].ElevatorBorked)
+                    {//broken elevators don't move
                         model.ElevatorList[i] = ElevatorTravel(model.ElevatorList[i], closestElevator.ElevatorDistance);
+                        if (model.ElevatorList[i].ElevatorCurrentFloor == model.CurrentFloor)
+                            model.ElevatorList[i].ElevatorOpen = true;
+                    }
                 }
             }
             return PartialView("~/Views/Home/ElevatorPartial.cshtml", model);
@@ -159,6 +163,8 @@ namespace Elevators.Controllers
                 }
             }
 
+            
+
             return elev;
         }
 
@@ -168,3 +174,4 @@ namespace Elevators.Controllers
         }
     }
 }
+

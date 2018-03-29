@@ -20,7 +20,7 @@ namespace Elevators.Controllers
         public IActionResult Elevator(ElevatorModel model) //randomising locations and stats of 6 different elevators
         {
             model.ElevatorCount = 1;
-            model.FloorCount = random.Next(5, 100);
+            model.FloorCount = random.Next(10, 100);
             model.CurrentFloor = random.Next(model.FloorCount);
             model.ElevatorList = new List<Elevator>();
 
@@ -34,8 +34,8 @@ namespace Elevators.Controllers
                 elevator.ElevatorID = i;
                 elevator.ElevatorDistance = Convert.ToUInt32(Math.Abs(model.CurrentFloor - elevator.ElevatorCurrentFloor));
                 elevator.ElevatorOpen = false;
-                elevator.ElevatorBottomFloor = 0;
-                elevator.ElevatorTopFloor = model.CurrentFloor;
+                elevator.ElevatorBottomFloor = random.Next(0, model.FloorCount - 10);
+                elevator.ElevatorTopFloor = random.Next(elevator.ElevatorBottomFloor + 10,model.FloorCount);
                 if (elevator.ElevatorDistance == 0)
                     elevator.ElevatorOpen = true;
 
@@ -47,11 +47,26 @@ namespace Elevators.Controllers
                 if (borkChance == 1)
                     elevator.ElevatorBorked = true;
 
-
                 int fullChance = random.Next(9);//10% chance of elevator being full
 
                 if (fullChance == 1)
                     elevator.ElevatorFull = true;
+
+                int rangeChance = random.Next(9);//10% chance of elevator only going between certain floors
+
+                if (rangeChance == 1)
+                {
+                    elevator.ElevatorBottomFloor = random.Next(0, model.FloorCount - 10);
+                    elevator.ElevatorTopFloor = random.Next(elevator.ElevatorBottomFloor + 10, model.FloorCount);
+                }
+                else
+                {
+                    elevator.ElevatorBottomFloor = 0;
+                    elevator.ElevatorTopFloor = model.FloorCount;
+                }
+
+                if (model.CurrentFloor >= elevator.ElevatorBottomFloor && model.CurrentFloor <= elevator.ElevatorTopFloor)
+                    elevator.ElevatorInRange = true;
 
                 model.ElevatorList.Add(elevator);
             }
@@ -59,6 +74,7 @@ namespace Elevators.Controllers
             return View(model);
         }
 
+        [HttpPost]
         public IActionResult CallElevator(ElevatorModel model)
         {
             List<Elevator> closestElevatorList = new List<Elevator>();
@@ -68,7 +84,7 @@ namespace Elevators.Controllers
 
             if (closestElevatorList.FirstOrDefault().ElevatorDistance == 0) //End if an elevator is already on the correct floor
             {
-                return PartialView("ElevatorPartial.cshtml", model);
+                return PartialView("Home/ElevatorPartial.cshtml", model);
             }
 
             for (int j = 0; j < closestElevatorList.Count; j++) //Adding distance if elevator is not going in the correct direction
@@ -82,16 +98,15 @@ namespace Elevators.Controllers
             closestElevator = closestElevatorList.OrderBy(x => x.ElevatorDistance)
                 .Where(x => x.ElevatorFull.Equals(false))
                 .Where(x => x.ElevatorBorked.Equals(false))
-                .Where(x => x.ElevatorBottomFloor.Equals(model.CurrentFloor >= x.ElevatorBottomFloor))
-                .Where(x => x.ElevatorBottomFloor.Equals(model.CurrentFloor <= x.ElevatorTopFloor))
-                .Where(x => x.ElevatorBorked.Equals(false))
-                .FirstOrDefault(); //Getting closest elevator, also making sure elevator is not broken or cannot reach
+                .Where(x => x.ElevatorInRange.Equals(true))
+                .FirstOrDefault(); //Getting closest elevator, also making sure elevator is not broken
+            
 
             for (int i = 0; i < model.ElevatorList.Count; i++)
             {
                 if (model.ElevatorList[i].ElevatorID == closestElevator.ElevatorID)
                 {
-                    int direction = model.ElevatorList[i].ElevatorCurrentFloor - model.CurrentFloor;
+                    int direction = model.ElevatorList[i].ElevatorCurrentFloor - model.CurrentFloor; //setting correct direction of elevator
 
                     if (direction > 0)
                         model.ElevatorList[i].ElevatorGoingUp = true;
@@ -99,16 +114,17 @@ namespace Elevators.Controllers
                         model.ElevatorList[i].ElevatorGoingUp = false;
 
                     model.ElevatorList[i].ElevatorCurrentFloor = model.CurrentFloor;
+                    model.ElevatorList[i].ElevatorOpen = true;
+                    //model.ElevatorList[i].ElevatorDistance = 0;
                 }
                 else
                 {
                     //Getting total distance all elevators travel, assuming they all travel at the same speed and continue in the direction they were going
-                    if (!model.ElevatorList[i].ElevatorBorked)
+                    if (!model.ElevatorList[i].ElevatorBorked) //broken elevators don't move
                         model.ElevatorList[i] = ElevatorTravel(model.ElevatorList[i], closestElevator.ElevatorDistance);
                 }
             }
-
-            return PartialView("ElevatorPartial.cshtml", model);
+            return PartialView("~/Views/Home/ElevatorPartial.cshtml", model);
         }
 
         public Elevator ElevatorTravel(Elevator elev, uint travelDistance)
@@ -124,7 +140,7 @@ namespace Elevators.Controllers
 
                     elev.ElevatorCurrentFloor++;
                 }
-                if (!elev.ElevatorGoingUp)
+                else if (!elev.ElevatorGoingUp)
                 {
                     if (elev.ElevatorBottomFloor == elev.ElevatorCurrentFloor - 1)//if elevator hits the lowest it can go, it changes direction
                     {
@@ -144,3 +160,4 @@ namespace Elevators.Controllers
         }
     }
 }
+
